@@ -1,0 +1,40 @@
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(r => r
+    .AddService(
+            serviceName: "service-1",
+            serviceVersion: typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown",
+            serviceInstanceId: Environment.MachineName))
+    .WithLogging(logging =>
+    {
+        logging.AddOtlpExporter(otlpOptions =>
+        {
+            // Use IConfiguration directly for Otlp exporter endpoint option.
+            otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", defaultValue: "http://localhost:4317")!);
+        });
+    });
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

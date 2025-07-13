@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  otel-collector:
+    restart: always
+    container_name: otel-collector
+    image: otel/opentelemetry-collector:latest
+    mem_limit: 512m
+    mem_reservation: 256m
+    volumes:
+      - ./otel-config.yaml:/etc/otel/config.yaml
+    command:
+      - '--config=/etc/otel/config.yaml'
+    ports:
+      - "4317:4317" # gRPC
+      - "4318:4318" # HTTP
+      - "8889:8889" # Prometheus exporter metrics
+    depends_on:
+      - loki
+    networks:
+      - opentelemetry-dotnet-first1
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    mem_limit: 768m
+    mem_reservation: 512m
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - loki
+    networks:
+      - opentelemetry-dotnet-first1
+  loki:
+    restart: always
+    container_name: loki
+    mem_limit: 768m
+    mem_reservation: 512m
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/config.yaml
+      - ./loki-data:/tmp/loki
+    command:
+      - '--config.file=/etc/loki/config.yaml'
+    networks:
+      - opentelemetry-dotnet-first1
+
+networks:
+  opentelemetry-dotnet-first1:
+    driver: bridge
+    
