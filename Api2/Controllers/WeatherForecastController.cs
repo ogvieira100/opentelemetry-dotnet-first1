@@ -25,8 +25,7 @@ namespace Api2.Controllers
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
             _logger.LogInformation("Fetching weather forecast data Api2");
-            await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                                 "WeatherForecast/Second"));
+           
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -36,10 +35,12 @@ namespace Api2.Controllers
             .ToArray();
         }
 
-        [HttpGet(Name = "Second")]
-        public IEnumerable<WeatherForecast> Second()
+        [HttpGet("Second")]
+        public async Task<IEnumerable<WeatherForecast>> Second()
         {
             _logger.LogInformation("Fetching weather forecast data second Api2");
+            await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
+                                "WeatherForecast/Second"));
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

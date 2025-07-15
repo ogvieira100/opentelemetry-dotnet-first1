@@ -26,7 +26,7 @@ builder.Services.AddOpenTelemetry()
              .AddHttpClientInstrumentation()
              .AddOtlpExporter(otlpOptions =>
              {
-                 otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", "http://tempo:4317")!);
+                 otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", "http://localhost:4317")!);
              });
      })
     .WithLogging(logging =>

@@ -1,7 +1,7 @@
 stream_over_http_enabled: true
 server:
   http_listen_port: 3200
-  grpc_listen_port: 4319
+  
 
 cache:
   background:
@@ -44,8 +44,8 @@ distributor:
       endpoint: "tempo:9411"
     otlp:
       protocols:
-        grpc: { endpoint: "tempo:4317" }
-        http: { endpoint: "tempo:4318" }
+        grpc: { endpoint: "tempo:4319" }
+        http: { endpoint: "tempo:4320" }
     opencensus:
       endpoint: "tempo:55678"
 

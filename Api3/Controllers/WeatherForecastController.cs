@@ -21,7 +21,7 @@ namespace Api3.Controllers
             _httpClient = httpContextFactory.CreateClient("Api3");
         }
 
-        [HttpGet(Name = "Second")]
+        [HttpGet("Second")]
         public IEnumerable<WeatherForecast> Second()
         {
             _logger.LogInformation("Fetching weather forecast data second Api3");
