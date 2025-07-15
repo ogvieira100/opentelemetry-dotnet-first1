@@ -43,7 +43,6 @@ builder.Services.AddOpenTelemetry()
            .AddRuntimeInstrumentation()
            .AddHttpClientInstrumentation()
            .AddAspNetCoreInstrumentation();
-          
           metric.AddOtlpExporter(otlpOptions =>
           {
               // Use IConfiguration directly for Otlp exporter endpoint option.
@@ -53,6 +52,13 @@ builder.Services.AddOpenTelemetry()
       })
 
     ;
+
+builder.Services.AddHttpClient("Api2", client =>
+{
+
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("Api2:Base").Value!); 
+
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

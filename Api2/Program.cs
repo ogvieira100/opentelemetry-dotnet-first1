@@ -53,6 +53,12 @@ builder.Services.AddOpenTelemetry()
           });
       })
     ;
+builder.Services.AddHttpClient("Api3", client =>
+{
+
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("Api3:Base").Value!);
+
+});
 
 var app = builder.Build();
 
