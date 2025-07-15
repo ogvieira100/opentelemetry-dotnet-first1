@@ -4,7 +4,7 @@ services:
   otel-collector:
     restart: always
     container_name: otel-collector
-    image: otel/opentelemetry-collector:latest
+    image: otel/opentelemetry-collector:0.129.1
     mem_limit: 512m
     mem_reservation: 256m
     volumes:
@@ -22,7 +22,7 @@ services:
 
   grafana:
     container_name: grafana
-    image: grafana/grafana:latest
+    image: grafana/grafana:12.0.1
     mem_limit: 768m
     mem_reservation: 512m
     restart: always
@@ -38,7 +38,7 @@ services:
     networks:
       - opentelemetry-dotnet-first1
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo:2.8.1
     command: [ "-config.file=/etc/tempo.yaml" ]
     container_name: tempo
     mem_limit: 768m
@@ -55,7 +55,7 @@ services:
       - opentelemetry-dotnet-first1    
   
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:3.4.0
     restart: always
     container_name: prometheus
     mem_limit: 512m
@@ -73,7 +73,7 @@ services:
     container_name: loki
     mem_limit: 768m
     mem_reservation: 512m
-    image: grafana/loki:latest
+    image: grafana/loki:3.5.2
     ports:
       - "3100:3100"
     volumes:
