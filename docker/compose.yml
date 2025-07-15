@@ -37,6 +37,37 @@ services:
       - loki
     networks:
       - opentelemetry-dotnet-first1
+  tempo:
+    image: grafana/tempo:latest
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    container_name: tempo
+    mem_limit: 768m
+    mem_reservation: 512m
+
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - ./tempo-data:/var/tempo
+    restart: always
+    ports:
+      - "3200:3200"  # Tempo HTTP endpoint
+      - "4319:4319"  # OTLP gRPC
+    networks:
+      - opentelemetry-dotnet-first1    
+  
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    container_name: prometheus
+    mem_limit: 512m
+    mem_reservation: 256m     # Memória reservada (mínimo garantido)
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data:/prometheus  # Volume para persistência dos dados
+    ports:
+      - "9090:9090" 
+    networks:
+      - opentelemetry-dotnet-first1
+  
   loki:
     restart: always
     container_name: loki

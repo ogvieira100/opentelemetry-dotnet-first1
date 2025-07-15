@@ -21,6 +21,10 @@ exporters:
     endpoint: jaeger:4317
     tls:
       insecure: true
+  otlp/tempo:
+    endpoint: tempo:4319
+    tls:
+      insecure: true    
   prometheus:
     endpoint: "0.0.0.0:8889"
   zipkin:
@@ -35,8 +39,9 @@ service:
       processors: [batch]
       exporters: [prometheus]
     traces:
+      processors: [batch]
       receivers: [otlp]
-      exporters: [otlp/jaeger]
+      exporters: [otlp/jaeger, otlp/tempo]
     logs:
       receivers:  [otlp]
       processors: [batch]
