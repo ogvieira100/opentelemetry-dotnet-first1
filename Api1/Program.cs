@@ -1,4 +1,6 @@
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -37,7 +39,7 @@ builder.Services.AddOpenTelemetry()
   .WithMetrics(metric => {
 
           metric
-           .AddMeter(Instrumentation.MeterName)
+           .AddMeter("Meter1")
            .AddRuntimeInstrumentation()
            .AddHttpClientInstrumentation()
            .AddAspNetCoreInstrumentation();
