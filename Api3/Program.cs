@@ -1,8 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Util.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +63,13 @@ builder.Services.AddHttpClient("Api1", client =>
 
 });
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationContext>(options =>
+                 options.UseSqlServer(connectionString)
+                .EnableSensitiveDataLogging()
+                .UseLazyLoadingProxies()
+    );
+builder.Services.AddScoped<ApplicationContext>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: always
+    container_name: mssql
+    mem_limit: 2g
+    environment:
+      SA_PASSWORD: "Ann@julia2010"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - opentelemetry-dotnet-first1
+    volumes:
+      - mssql_data:/var/opt/mssql
   otel-collector:
     restart: always
     container_name: otel-collector
@@ -88,4 +103,5 @@ services:
 networks:
   opentelemetry-dotnet-first1:
     driver: bridge
-    
+volumes:
+  mssql_data:    

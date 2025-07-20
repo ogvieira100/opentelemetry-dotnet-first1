@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6 d17.14
+VisualStudioVersion = 17.14.36301.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api1", "Api1\Api1.csproj", "{903C5975-8A4F-4243-8317-52E7BC350C33}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api2", "Api2\Api2.csproj", "{B58D4F94-CFC6-4948-B679-B7E80EEF3C35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api3", "Api3\Api3.csproj", "{5A66DFEC-9347-4ADA-B42A-94EA762C83C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", "{907BB6BA-35CC-452D-94B7-1AEA656FFEDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{5A66DFEC-9347-4ADA-B42A-94EA762C83C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A66DFEC-9347-4ADA-B42A-94EA762C83C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A66DFEC-9347-4ADA-B42A-94EA762C83C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{907BB6BA-35CC-452D-94B7-1AEA656FFEDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{907BB6BA-35CC-452D-94B7-1AEA656FFEDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{907BB6BA-35CC-452D-94B7-1AEA656FFEDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{907BB6BA-35CC-452D-94B7-1AEA656FFEDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
