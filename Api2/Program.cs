@@ -15,6 +15,14 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options.IncludeFormattedMessage = true;
+    options.IncludeScopes = true;
+    options.ParseStateValues = true;
+});
+
+
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(r => r
     .AddService(
@@ -24,7 +32,27 @@ builder.Services.AddOpenTelemetry()
      .WithTracing(tracing =>
      {
          tracing
-             .AddAspNetCoreInstrumentation()
+             .AddSource("Api2.Weather") // <== Aqui est� o segredo!
+             .AddAspNetCoreInstrumentation(options =>
+            {
+                options.RecordException = true;
+                options.EnrichWithException = (activity, exception) =>
+                {
+                    activity.SetTag("exception.type", exception.GetType().Name);
+                    activity.SetTag("exception.message", exception.Message);
+                    activity.SetTag("exception.stacktrace", exception.StackTrace);
+                };
+                options.EnrichWithHttpResponse = (activity, httpResponse) =>
+                {
+                    activity.SetTag("http.response_content_length", httpResponse.ContentLength);
+                };
+                options.EnrichWithHttpRequest = (activity, httprequest) =>
+                {
+                    activity.SetTag("http.request_content_length", httprequest.ContentLength);
+                    activity.SetTag("http.user_agent", httprequest.Headers.UserAgent.ToString());
+                    activity.SetTag("http.custom_header", httprequest.Headers["X-Correlation-Id"].ToString());
+                };
+            })
              .AddHttpClientInstrumentation()
              .AddOtlpExporter(otlpOptions =>
              {

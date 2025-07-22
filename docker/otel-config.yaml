@@ -13,6 +13,8 @@ processors:
 
 # Exporters
 exporters:
+  debug/traces:
+    verbosity: detailed
   otlphttp/logs:
     endpoint: "http://loki:3100/otlp"
     tls:
@@ -41,7 +43,7 @@ service:
     traces:
       processors: [batch]
       receivers: [otlp]
-      exporters: [otlp/jaeger, otlp/tempo]
+      exporters: [otlp/jaeger, otlp/tempo,debug/traces]
     logs:
       receivers:  [otlp]
       processors: [batch]

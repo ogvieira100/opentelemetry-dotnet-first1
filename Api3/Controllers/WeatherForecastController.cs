@@ -41,16 +41,16 @@ namespace Api3.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CustomerEmployee customer)
         {
-            _logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api1");
-            _logger.LogCritical("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogDebug("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogError("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogWarning("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api1");
+            //_logger.LogCritical("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogDebug("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogError("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogWarning("Esse Log mostra as informações na instrumentação manual Api1 ");
 
             Random rand = new Random();
             int numero = rand.Next(0, 100); // Gera número de 0 a 99
 
-            for (int i = 1; i <= numero; i++)
+            for (int i = 1; i <= 2; i++)
             {
                 await Task.Delay(500);
                 _logger.LogInformation("Log de teste {i}", i);

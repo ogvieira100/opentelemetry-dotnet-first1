@@ -14,6 +14,14 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options.IncludeFormattedMessage = true;
+    options.IncludeScopes = true;
+    options.ParseStateValues = true;
+});
+
+
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(r => r
     .AddService(
@@ -23,7 +31,26 @@ builder.Services.AddOpenTelemetry()
      .WithTracing(tracing =>
      {
          tracing
-             .AddAspNetCoreInstrumentation()
+             .AddAspNetCoreInstrumentation(options =>
+            {
+                options.RecordException = true;
+                options.EnrichWithException = (activity, exception) =>
+                {
+                    activity.SetTag("exception.type", exception.GetType().Name);
+                    activity.SetTag("exception.message", exception.Message);
+                    activity.SetTag("exception.stacktrace", exception.StackTrace);
+                };
+                options.EnrichWithHttpResponse = (activity, httpResponse) =>
+                {
+                    activity.SetTag("http.response_content_length", httpResponse.ContentLength);
+                };
+                options.EnrichWithHttpRequest = (activity, httprequest) =>
+                {
+                    activity.SetTag("http.request_content_length", httprequest.ContentLength);
+                    activity.SetTag("http.user_agent", httprequest.Headers.UserAgent.ToString());
+                    activity.SetTag("http.custom_header", httprequest.Headers["X-Correlation-Id"].ToString());
+                };
+            })
              .AddHttpClientInstrumentation()
              .AddOtlpExporter(otlpOptions =>
              {
@@ -32,33 +59,37 @@ builder.Services.AddOpenTelemetry()
      })
     .WithLogging(logging =>
     {
+
+
+
         logging.AddOtlpExporter(otlpOptions =>
         {
             // Use IConfiguration directly for Otlp exporter endpoint option.
             otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", defaultValue: "http://localhost:4317")!);
         });
     })
-  .WithMetrics(metric => {
+  .WithMetrics(metric =>
+  {
 
-          metric
-           .AddMeter("Meter1")
-           .AddRuntimeInstrumentation()
-           .AddHttpClientInstrumentation()
-           .AddAspNetCoreInstrumentation();
-          metric.AddOtlpExporter(otlpOptions =>
-          {
-              // Use IConfiguration directly for Otlp exporter endpoint option.
-              otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", defaultValue: "http://localhost:4317")!);
-              otlpOptions.Protocol = OtlpExportProtocol.Grpc;
-          });
-      })
+      metric
+       .AddMeter("Meter1")
+       .AddRuntimeInstrumentation()
+       .AddHttpClientInstrumentation()
+       .AddAspNetCoreInstrumentation();
+      metric.AddOtlpExporter(otlpOptions =>
+      {
+          // Use IConfiguration directly for Otlp exporter endpoint option.
+          otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", defaultValue: "http://localhost:4317")!);
+          otlpOptions.Protocol = OtlpExportProtocol.Grpc;
+      });
+  })
 
     ;
 
 builder.Services.AddHttpClient("Api2", client =>
 {
 
-    client.BaseAddress = new Uri(builder.Configuration.GetSection("Api2:Base").Value!); 
+    client.BaseAddress = new Uri(builder.Configuration.GetSection("Api2:Base").Value!);
 
 });
 
@@ -69,7 +100,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
                 .UseLazyLoadingProxies()
     );
 
-builder.Services.AddScoped<ApplicationContext>(); 
+builder.Services.AddScoped<ApplicationContext>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

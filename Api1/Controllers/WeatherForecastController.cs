@@ -4,6 +4,7 @@ using OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System.Diagnostics;
 using Util.Data;
 using Util.Models;
 
@@ -33,16 +34,16 @@ namespace Api1.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Customer customer)
         {
-            _logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api1");
-            _logger.LogCritical("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogDebug("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogError("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogWarning("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api1");
+            //_logger.LogCritical("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogDebug("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogError("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogWarning("Esse Log mostra as informações na instrumentação manual Api1 ");
 
             Random rand = new Random();
             int numero = rand.Next(0, 100); // Gera número de 0 a 99
 
-            for (int i = 1; i <= numero; i++)
+            for (int i = 1; i <= 2; i++)
             {
                 await Task.Delay(500);
                 _logger.LogInformation("Log de teste {i}", i);
@@ -55,6 +56,9 @@ namespace Api1.Controllers
 
                 _applicationContext.Add(customerLog);
                 await _applicationContext.SaveChangesAsync();
+
+          
+
                 var request = new HttpRequestMessage(HttpMethod.Post, "WeatherForecast")
                 {
                     Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(customerLog), System.Text.Encoding.UTF8, "application/json")

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Net.Http;
 using Util.Data;
 using Util.Dto;
@@ -15,6 +16,7 @@ namespace Api2.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+      //  private static readonly ActivitySource _activitySource = new("Api2.Weather");
 
         private readonly ILogger<WeatherForecastController> _logger;
         readonly HttpClient _httpClient;
@@ -29,16 +31,24 @@ namespace Api2.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Customer customer)
         {
-            _logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api1");
-            _logger.LogCritical("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogDebug("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogError("Esse Log mostra as informações na instrumentação manual Api1 ");
-            _logger.LogWarning("Esse Log mostra as informações na instrumentação manual Api1 ");
+
+            //using var activity = _activitySource.StartActivity("POST WeatherForecast Api2 body", ActivityKind.Server);
+
+            //if (activity != null)
+            //{
+            //    activity.SetTag("http.request.body", System.Text.Json.JsonSerializer.Serialize(customer));
+            //}
+
+            //_logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api1");
+            //_logger.LogCritical("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogDebug("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogError("Esse Log mostra as informações na instrumentação manual Api1 ");
+            //_logger.LogWarning("Esse Log mostra as informações na instrumentação manual Api1 ");
 
             Random rand = new Random();
             int numero = rand.Next(0, 100); // Gera número de 0 a 99
 
-            for (int i = 1; i <= numero; i++)
+            for (int i = 1; i <= 2; i++)
             {
                 await Task.Delay(500);
                 _logger.LogInformation("Log de teste {i}", i);
