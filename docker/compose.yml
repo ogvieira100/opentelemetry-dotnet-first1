@@ -19,7 +19,7 @@ services:
   otel-collector:
     restart: always
     container_name: otel-collector
-    image: otel/opentelemetry-collector:latest
+    image: otel/opentelemetry-collector:0.130.1
     mem_limit: 512m
     mem_reservation: 256m
     volumes:
@@ -37,7 +37,7 @@ services:
 
   grafana:
     container_name: grafana
-    image: grafana/grafana:latest
+    image: grafana/grafana:12.0.2
     mem_limit: 768m
     mem_reservation: 512m
     restart: always
@@ -45,6 +45,7 @@ services:
       - "3000:3000"
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -53,7 +54,7 @@ services:
     networks:
       - opentelemetry-dotnet-first1
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo:2.8.1
     command: [ "-config.file=/etc/tempo.yaml" ]
     container_name: tempo
     mem_limit: 768m
@@ -61,7 +62,7 @@ services:
 
     volumes:
       - ./tempo.yaml:/etc/tempo.yaml
-      - ./tempo-data:/var/tempo
+      - tempo_data:/var/tempo
     restart: always
     ports:
       - "3200:3200"  # Tempo HTTP endpoint
@@ -71,14 +72,14 @@ services:
       - opentelemetry-dotnet-first1    
   
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.5.0
     restart: always
     container_name: prometheus
     mem_limit: 512m
     mem_reservation: 256m     # Memória reservada (mínimo garantido)
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus_data:/prometheus  # Volume para persistência dos dados
+      - prometheus_data:/prometheus  # Volume para persistência dos dados
     ports:
       - "9090:9090" 
     networks:
@@ -87,6 +88,7 @@ services:
   loki:
     restart: always
     container_name: loki
+    user: root # UID:GID for Loki somente para testes
     mem_limit: 768m
     mem_reservation: 512m
     image: grafana/loki:3.5.2
@@ -94,7 +96,7 @@ services:
       - "3100:3100"
     volumes:
       - ./loki-config.yaml:/etc/loki/config.yaml
-      - ./loki-data:/tmp/loki
+      - loki_data:/tmp/loki
     command:
       - '--config.file=/etc/loki/config.yaml'
     networks:
@@ -104,4 +106,9 @@ networks:
   opentelemetry-dotnet-first1:
     driver: bridge
 volumes:
-  mssql_data:    
+  mssql_data:
+  prometheus_data:
+  grafana_data:
+  loki_data:
+  tempo_data:
+  otel_data:    
