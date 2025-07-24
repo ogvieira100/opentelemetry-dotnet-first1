@@ -38,6 +38,7 @@ services:
   grafana:
     container_name: grafana
     image: grafana/grafana:12.0.2
+    user: root
     mem_limit: 768m
     mem_reservation: 512m
     restart: always
@@ -57,6 +58,7 @@ services:
     image: grafana/tempo:2.8.1
     command: [ "-config.file=/etc/tempo.yaml" ]
     container_name: tempo
+    user: root
     mem_limit: 768m
     mem_reservation: 512m
 
@@ -74,6 +76,7 @@ services:
   prometheus:
     image: prom/prometheus:v3.5.0
     restart: always
+    user: root
     container_name: prometheus
     mem_limit: 512m
     mem_reservation: 256m     # Memória reservada (mínimo garantido)
@@ -96,7 +99,7 @@ services:
       - "3100:3100"
     volumes:
       - ./loki-config.yaml:/etc/loki/config.yaml
-      - loki_data:/tmp/loki
+      - loki_data:/var/loki
     command:
       - '--config.file=/etc/loki/config.yaml'
     networks:
