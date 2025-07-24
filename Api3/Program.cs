@@ -31,6 +31,10 @@ builder.Services.AddOpenTelemetry()
      .WithTracing(tracing =>
      {
          tracing
+             .AddSqlClientInstrumentation(options =>
+             {
+                 options.SetDbStatementForText = true;
+             })
              .AddAspNetCoreInstrumentation(options =>
             {
                 options.RecordException = true;
@@ -59,6 +63,7 @@ builder.Services.AddOpenTelemetry()
      })
     .WithLogging(logging =>
     {
+        
         logging.AddOtlpExporter(otlpOptions =>
         {
             // Use IConfiguration directly for Otlp exporter endpoint option.

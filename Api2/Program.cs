@@ -33,6 +33,10 @@ builder.Services.AddOpenTelemetry()
      {
          tracing
              .AddSource("Api2.Weather") // <== Aqui est� o segredo!
+              .AddSqlClientInstrumentation(options =>
+              {
+                  options.SetDbStatementForText = true;
+              })
              .AddAspNetCoreInstrumentation(options =>
             {
                 options.RecordException = true;
