@@ -48,6 +48,7 @@ builder.Services.AddOpenTelemetry()
                 };
                 options.EnrichWithHttpResponse = (activity, httpResponse) =>
                 {
+                    activity.SetTag("http.status_code", httpResponse.StatusCode);
                     activity.SetTag("http.response_content_length", httpResponse.ContentLength);
                 };
                 options.EnrichWithHttpRequest = (activity, httprequest) =>
