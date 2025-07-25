@@ -64,7 +64,7 @@ services:
 
     volumes:
       - ./tempo.yaml:/etc/tempo.yaml
-      - tempo_data:/var/tempo
+      - ./tempo-data:/var/tempo
     restart: always
     ports:
       - "3200:3200"  # Tempo HTTP endpoint
@@ -82,7 +82,7 @@ services:
     mem_reservation: 256m     # Memória reservada (mínimo garantido)
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus  # Volume para persistência dos dados
+      - ./prometheus_data:/prometheus  # Volume para persistência dos dados
     ports:
       - "9090:9090" 
     networks:
@@ -99,7 +99,7 @@ services:
       - "3100:3100"
     volumes:
       - ./loki-config.yaml:/etc/loki/config.yaml
-      - loki_data:/var/loki
+      - ./loki-data:/tmp/loki
     command:
       - '--config.file=/etc/loki/config.yaml'
     networks:
