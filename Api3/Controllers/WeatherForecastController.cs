@@ -15,12 +15,17 @@ namespace Api3.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+        readonly IProcessOrder _processOrder;
         readonly ApplicationContext _applicationContext;
         private readonly ILogger<WeatherForecastController> _logger;
         readonly HttpClient _httpClient;
-        public WeatherForecastController(ApplicationContext applicationContext,IHttpClientFactory httpContextFactory, ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ApplicationContext applicationContext,
+                 IHttpClientFactory httpContextFactory,
+                    IProcessOrder processOrder,
+                 ILogger<WeatherForecastController> logger)
         {
-            _applicationContext = applicationContext;   
+            _applicationContext = applicationContext;
+            _processOrder = processOrder;
             _logger = logger;
             _httpClient = httpContextFactory.CreateClient("Api1");
         }
@@ -41,45 +46,20 @@ namespace Api3.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CustomerEmployee customer)
         {
-            _logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api3");
-            _logger.LogCritical("Esse Log mostra as informações na instrumentação manual Api3 ");
-            _logger.LogDebug("Esse Log mostra as informações na instrumentação manual Api3 ");
-            _logger.LogError("Esse Log mostra as informações na instrumentação manual Api3 ");
-            _logger.LogWarning("Esse Log mostra as informações na instrumentação manual Api3 ");
-
-            Random rand = new Random();
-            int numero = rand.Next(0, 100); // Gera número de 0 a 99
-
-            for (int i = 1; i <= 2; i++)
-            {
-                await Task.Delay(500);
-                _logger.LogInformation("Log de teste {i}", i);
-              
-                var order = new Order
-                {
-                    CustomerId = customer.Customer.Id,
-                    EmployeeId = customer.Employee.Id,
-                    Description = $"Pedido {i} do cliente {customer.Customer.Nome} para o funcionário {customer.Employee.NomeFantasia}" 
-                };
-                _applicationContext.Add(order);
-                await _applicationContext.SaveChangesAsync();
-            }
-           await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get,
-                                 "WeatherForecast/GetAll"));
-
+            customer =  await _processOrder.ProcessOrderAsync(customer);
             return Ok(customer);
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
-            _logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api2");
-            _logger.LogError("Esse Log mostra as informações na instrumentação manual Api2");
+            _logger.LogInformation("Esse Log mostra as informaï¿½ï¿½es na instrumentaï¿½ï¿½o manual Api2");
+            _logger.LogError("Esse Log mostra as informaï¿½ï¿½es na instrumentaï¿½ï¿½o manual Api2");
             _logger.LogInformation("Fetching weather forecast data Api3");
 
 
             Random rand = new Random();
-            int numero = rand.Next(0, 100); // Gera número de 0 a 99
+            int numero = rand.Next(0, 100); // Gera nï¿½mero de 0 a 99
 
             bool ehPar = numero % 2 == 0;
 

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -78,7 +78,9 @@ builder.Services.AddOpenTelemetry()
            .AddMeter("Meter3")
            .AddRuntimeInstrumentation()
            .AddHttpClientInstrumentation()
-           .AddAspNetCoreInstrumentation();
+           .AddAspNetCoreInstrumentation()
+           .AddPrometheusExporter(); // 👈 AQUI
+      ;
           
           metric.AddOtlpExporter(otlpOptions =>
           {
@@ -103,7 +105,10 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
                 .UseLazyLoadingProxies()
     );
 builder.Services.AddScoped<ApplicationContext>();
+builder.Services.AddScoped<IProcessOrder, ProcessOrder>();
 var app = builder.Build();
+
+app.UseOpenTelemetryPrometheusScrapingEndpoint(); // para expor o /metrics
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

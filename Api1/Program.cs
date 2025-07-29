@@ -1,10 +1,13 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using System.Diagnostics.Metrics;
 using Util.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,16 +82,16 @@ builder.Services.AddOpenTelemetry()
        .AddMeter("Meter1")
        .AddRuntimeInstrumentation()
        .AddHttpClientInstrumentation()
-       .AddAspNetCoreInstrumentation();
+       .AddAspNetCoreInstrumentation()
+       .AddPrometheusExporter(); // 👈 AQUI
+      ;
       metric.AddOtlpExporter(otlpOptions =>
       {
           // Use IConfiguration directly for Otlp exporter endpoint option.
           otlpOptions.Endpoint = new Uri(builder.Configuration.GetValue("Otlp:Endpoint", defaultValue: "http://localhost:4317")!);
           otlpOptions.Protocol = OtlpExportProtocol.Grpc;
       });
-  })
-
-    ;
+  });
 
 builder.Services.AddHttpClient("Api2", client =>
 {
@@ -106,6 +109,10 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 
 builder.Services.AddScoped<ApplicationContext>();
 var app = builder.Build();
+
+
+app.UseOpenTelemetryPrometheusScrapingEndpoint(); // para expor o /metrics
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

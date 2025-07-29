@@ -78,7 +78,9 @@ builder.Services.AddOpenTelemetry()
            .AddMeter("Meter2")
            .AddRuntimeInstrumentation()
            .AddHttpClientInstrumentation()
-           .AddAspNetCoreInstrumentation();
+           .AddAspNetCoreInstrumentation()
+           .AddPrometheusExporter(); // 👈 AQUI
+      ;
           
           metric.AddOtlpExporter(otlpOptions =>
           {
@@ -104,6 +106,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddScoped<ApplicationContext>();
 var app = builder.Build();
 
+app.UseOpenTelemetryPrometheusScrapingEndpoint(); // para expor o /metrics
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -28,6 +28,44 @@ namespace Api2.Controllers
             _httpClient = httpContextFactory.CreateClient("Api3");
         }
 
+        [HttpPost("QueePost")]
+        public async Task<IActionResult> QueePost([FromBody] Customer customer)
+        {
+
+          
+            _logger.LogInformation("Esse Log mostra as informações na instrumentação manual Api2");
+            _logger.LogCritical("Esse Log mostra as informações na instrumentação manual Api2 ");
+            _logger.LogDebug("Esse Log mostra as informações na instrumentação manual Api2 ");
+            _logger.LogError("Esse Log mostra as informações na instrumentação manual Api2 ");
+            _logger.LogWarning("Esse Log mostra as informações na instrumentação manual Ap2 ");
+
+            Random rand = new Random();
+            int numero = rand.Next(0, 100); // Gera número de 0 a 99
+
+            for (int i = 1; i <= 1; i++)
+            {
+                await Task.Delay(500);
+                _logger.LogInformation("Log de teste {i}", i);
+                var customerLog = new Employee
+                {
+                    NomeFantasia = $"{customer.Nome} - {i} ",
+                    CNPJ = customer.CPF
+                };
+
+                var customerEmployee = new CustomerEmployee
+                {
+                    Customer = customer,
+                    Employee = customerLog
+                };
+
+                _applicationContext.Add(customerLog);
+                await _applicationContext.SaveChangesAsync();
+               /*enviar para fila*/
+
+            }
+            return Ok(customer);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Customer customer)
         {

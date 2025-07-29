@@ -2,6 +2,23 @@ version: '3.8'
 
 services:
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-developerEvaluation-container
+    restart: always
+    mem_limit: 512m
+    mem_reservation: 256m
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - developerEvaluation-network
+    volumes:
+      - rabbitmq-open-telemetry-volume:/var/lib/rabbitmq
+      - rabbitmq-open-telemetry-volume-logs:/var/log/rabbitmq
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
     restart: always
@@ -112,3 +129,5 @@ volumes:
   loki_data:
   tempo_data:
   otel_data:    
+  rabbitmq-open-telemetry-volume:
+  rabbitmq-open-telemetry-volume-logs:
