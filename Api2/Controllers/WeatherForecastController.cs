@@ -1,8 +1,11 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Net.Http;
 using Util.Data;
 using Util.Dto;
+using Util.MessageBus;
+using Util.MessageBus.Models;
 using Util.Models;
 
 namespace Api2.Controllers
@@ -20,11 +23,15 @@ namespace Api2.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
         readonly HttpClient _httpClient;
+        readonly IMessageBusRabbitMq _messageBusRabbitMq;
         readonly ApplicationContext _applicationContext;
-        public WeatherForecastController(ApplicationContext applicationContext, IHttpClientFactory httpContextFactory, ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ApplicationContext applicationContext,
+            IMessageBusRabbitMq messageBusRabbitMq, 
+            IHttpClientFactory httpContextFactory, ILogger<WeatherForecastController> logger)
         {
             _applicationContext = applicationContext;
             _logger = logger;
+            _messageBusRabbitMq = messageBusRabbitMq;   
             _httpClient = httpContextFactory.CreateClient("Api3");
         }
 
@@ -60,7 +67,19 @@ namespace Api2.Controllers
 
                 _applicationContext.Add(customerLog);
                 await _applicationContext.SaveChangesAsync();
-               /*enviar para fila*/
+                /*enviar para fila*/
+
+                var insertOrderIntegrationEvent = new InsertOrderIntegrationEvent
+                {
+                    Customer = customer,
+                    Employee = customerLog
+                };
+
+                _messageBusRabbitMq.Publish(insertOrderIntegrationEvent,
+                   new PropsMessageQueeDto
+                   {
+                       Queue = "QueeOrderInsert"
+                   });
 
             }
             return Ok(customer);

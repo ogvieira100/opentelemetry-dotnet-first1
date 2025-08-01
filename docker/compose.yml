@@ -4,7 +4,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq-developerEvaluation-container
+    container_name: rabbitmq-container
     restart: always
     mem_limit: 512m
     mem_reservation: 256m
@@ -15,7 +15,7 @@ services:
       - "5672:5672"
       - "15672:15672"
     networks:
-      - developerEvaluation-network
+      - opentelemetry-dotnet-first1
     volumes:
       - rabbitmq-open-telemetry-volume:/var/lib/rabbitmq
       - rabbitmq-open-telemetry-volume-logs:/var/log/rabbitmq

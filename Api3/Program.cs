@@ -1,10 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Api3.Services;
+using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Util.Data;
+using Util.MessageBus;
+using Util.MessageBus.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -106,6 +109,13 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     );
 builder.Services.AddScoped<ApplicationContext>();
 builder.Services.AddScoped<IProcessOrder, ProcessOrder>();
+builder.Services.AddSingleton<IMessageBusRabbitMq, MessageBusRabbitMq>();
+//
+
+/*hosted services*/
+builder.Services
+    .AddHostedService<ProcessOrderHandler>();
+
 var app = builder.Build();
 
 app.UseOpenTelemetryPrometheusScrapingEndpoint(); // para expor o /metrics

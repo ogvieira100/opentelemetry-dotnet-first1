@@ -7,6 +7,8 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using System.Diagnostics.Metrics;
 using Util.Data;
+using Util.MessageBus;
+using Util.MessageBus.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -108,6 +110,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     );
 
 builder.Services.AddScoped<ApplicationContext>();
+builder.Services.AddSingleton<IMessageBusRabbitMq, MessageBusRabbitMq>();
 var app = builder.Build();
 
 
