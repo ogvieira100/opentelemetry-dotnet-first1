@@ -60,7 +60,7 @@ namespace Api1.Controllers
                 _applicationContext.Add(customerLog);
                 await _applicationContext.SaveChangesAsync();
 
-                var request = new HttpRequestMessage(HttpMethod.Post, "QueePost")
+                var request = new HttpRequestMessage(HttpMethod.Post, "WeatherForecast/QueePost")
                 {
                     Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(customerLog), System.Text.Encoding.UTF8, "application/json")
                 };

@@ -37,6 +37,8 @@ builder.Services.AddOpenTelemetry()
      .WithTracing(tracing =>
      {
          tracing
+              //.AddSource("Api2.Weather") // <== Aqui est� o segredo!
+             .AddSource("DeveloperEvaluation.MessageBus") // <== Aqui est� o segredo!
              .AddSqlClientInstrumentation(options =>
              {
                  options.SetDbStatementForText = true;
